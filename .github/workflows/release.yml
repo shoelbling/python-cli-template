@@ -1,5 +1,3 @@
-name: Release Version Tag
-
 on:
   push:
     tags:
@@ -10,9 +8,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - run: pip install -r requirements.txt
-      - run: echo "Running release process for ${{ github.ref_name }}"
+
+      - name: Generate release notes
+        id: notes
+        run: echo "RELEASE_NOTES=Release ${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: ${{ env.RELEASE_NOTES }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
