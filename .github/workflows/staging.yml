@@ -1,0 +1,13 @@
+name: Staging Deploy
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Staging
+        run: bash scripts/deploy-staging.sh
